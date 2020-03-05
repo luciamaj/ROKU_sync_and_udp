@@ -12,35 +12,41 @@ Sub Main()
 	updateIntervalInSeconds = 30
 
 	htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefix$, manifest$, htmlFile$)
-
 	mp = CreateObject("roMessagePort")
-    timer = CreateObject("roTimer")
-    timer.SetPort(mp)
-    timer.SetElapsed(updateIntervalInSeconds, 0)
-    print "Start at "; UpTime(0)
-    timer.Start()
-
 	udp = CreateObject("roDatagramReceiver", 5000)
 	udp.SetPort(mp)
 	udp.SetUserData("port 5000")
 
+	device = CreateObject("roDeviceInfo")
+	deviceId = device.GetDeviceUniqueId()
+
+	sender = CreateObject("roDatagramSender")
+	sender.setDestination("192.168.0.124", 5000)
+	sender.Send("connected")
+
+	' mi arriva in UDP un messaggio o di comando o di cambio pagina
+
 	while true
 	  	event = mp.WaitMessage(0)
-      		if type(event) = "roTimerEvent" then
-          		print "Timer event received at "; UpTime(0)
-	  			htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$)
-          		timer.Start()
-			else if type(event) = "roDatagramEvent" then
+			if type(event) = "roDatagramEvent" then
 				msg = event.GetString()
-				?type(msg)
-				if msg = "reboot" then
-					print "reboot " + event.GetString()
-					RebootSystem()
-				else
-					appPrefix$ = msg
+				typeOfMessage = left(msg, 4)
+				shortMsg = mid(msg, 5)
+
+				print typeOfMessage
+				print shortMsg
+
+				if typeOfMessage = "com/" then
+					if shortMsg = "reboot" then
+						print "reboot " + event.GetString()
+						RebootSystem()
+					else if shortMsg = "refresh" then
+						htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$)
+					end if
+				else if typeOfMessage = "url/" then
+					appPrefix$ = shortMsg
 					print "altro comando " + appPrefix$
 					htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$)
-					timer.Start()
 				end if
       		end if
 	end while
