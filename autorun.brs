@@ -310,12 +310,21 @@ Function CreateHtmlWidget(assetObjects as Object, htmlFile$ as String)
     width=vm.GetResX()
     height=vm.GetResY()
     rect=CreateObject("roRectangle", 0, 0, width, height)
-	htmlWidget = CreateObject("roHtmlWidget", rect)
+
+	url$ = "file:///" + htmlFile$
+	is = { port: 2999 }
+	config = {
+    	nodejs_enabled: true
+    	inspector_server: is
+    	brightsign_js_objects_enabled: true
+      url: url$
+	}
+
+	htmlWidget = CreateObject("roHtmlWidget", rect, config)
 	htmlWidget.EnableSecurity(false)
 	htmlWidget.EnableJavascript(true)
 	prefix$ = ""
 	htmlWidget.MapFilesFromAssetPool(assetObjects.pool, assetObjects.assetCollection, prefix$, "/")
-	url$ = "file:///" + htmlFile$
 	htmlWidget.SetUrl(url$)
     jsClasses = CreateObject("roAssociativeArray")
     jsClasses["*"] = [ "*" ]
