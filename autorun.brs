@@ -10,7 +10,7 @@ Sub Main()
 	htmlFile$ = "index.html"
 	' Default to updating every 30 secs
 	updateIntervalInSeconds = 30
-
+	
 	htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefix$, manifest$, htmlFile$)
 	mp = CreateObject("roMessagePort")
 	udp = CreateObject("roDatagramReceiver", 5000)
@@ -38,20 +38,21 @@ Sub Main()
 
 				if typeOfMessage = "com/" then
 					if shortMsg = "reboot" then
-						print "reboot " + event.GetString()
+						print "reboot"
 						RebootSystem()
 					else if shortMsg = "refresh" then
+						print "refresh"
 						htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$)
 					end if
 				else if typeOfMessage = "url/" then
 					appPrefix$ = shortMsg
-					print "altro comando " + appPrefix$
+					print "url: " + appPrefix$
 					htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$)
 				end if
       		end if
 	end while
 
-    StartTelnet()
+	' StartTelnet()
 End Sub
 
 Function EnableSSH()
@@ -310,7 +311,16 @@ Function CreateHtmlWidget(assetObjects as Object, htmlFile$ as String)
     width=vm.GetResX()
     height=vm.GetResY()
     rect=CreateObject("roRectangle", 0, 0, width, height)
-	htmlWidget = CreateObject("roHtmlWidget", rect)
+
+	is = { port: 2999 }
+	config = {
+    	nodejs_enabled: true
+    	inspector_server: is
+    	brightsign_js_objects_enabled: true
+      	url: url$
+	}
+
+	htmlWidget = CreateObject("roHtmlWidget", rect, config)
 	htmlWidget.EnableSecurity(false)
 	htmlWidget.EnableJavascript(true)
 	prefix$ = ""
