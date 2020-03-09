@@ -1,8 +1,8 @@
 Sub Main()
 
-	appPrefix$ = "produzione1/dist/"
-	urlPrefix$ = "http://192.168.0.124/applicazioni_git/roku/" + appPrefix$
-	urlPrefixUpdate$ = "http://192.168.0.124/applicazioni_git/roku/"
+	appPrefix$ = "roku/"
+	urlPrefix$ = "http://192.168.0.124/applicazioni_git/" + appPrefix$
+	urlPrefixUpdate$ = "http://192.168.0.124/applicazioni_git/"
 	manifest$ = "manifest.mf"
 	' End custom variables
 
