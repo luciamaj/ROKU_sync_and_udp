@@ -1,8 +1,8 @@
 Sub Main()
 
-	appPrefix$ = "roku/"
-	urlPrefix$ = "http://192.168.0.124/applicazioni_git/" + appPrefix$
-	urlPrefixUpdate$ = "http://192.168.0.124/applicazioni_git/"
+	appPrefix$ = "topic-casa/"
+	urlPrefix$ = "http://192.168.1.18/fellini/" + appPrefix$
+	urlPrefixUpdate$ = "http://192.168.1.18/fellini/"
 	manifest$ = "manifest.mf"
 	' End custom variables
 
@@ -21,7 +21,7 @@ Sub Main()
 	deviceId = device.GetDeviceUniqueId()
 
 	sender = CreateObject("roDatagramSender")
-	sender.setDestination("192.168.0.124", 5000)
+	sender.setDestination("192.168.1.22", 5000)
 	sender.Send("connected")
 
 	' mi arriva in UDP un messaggio o di comando o di cambio pagina
