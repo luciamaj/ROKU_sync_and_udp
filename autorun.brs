@@ -1,8 +1,8 @@
 Sub Main()
 
 	appPrefix$ = "topic-casa/"
-	urlPrefix$ = "http://192.168.1.18/fellini/" + appPrefix$
-	urlPrefixUpdate$ = "http://192.168.1.18/fellini/"
+	urlPrefix$ = "http://192.168.1.18:8080/fellini/" + appPrefix$
+	urlPrefixUpdate$ = "http://192.168.1.18:8080/fellini/"
 	manifest$ = "manifest.mf"
 	' End custom variables
 
