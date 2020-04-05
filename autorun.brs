@@ -9,7 +9,6 @@ Sub Main()
 	' These should be custom variables but currently are not
 	htmlFile$ = "index.html"
 	' Default to updating every 30 secs
-	updateIntervalInSeconds = 30
 
 	htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefix$, manifest$, htmlFile$)
 	mp = CreateObject("roMessagePort")
