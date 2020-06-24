@@ -17,6 +17,9 @@ Sub Main()
 	udp = CreateObject("roDatagramReceiver", 5000)
 	udp.SetPort(mp)
 	udp.SetUserData("port 5000")
+	mode=CreateObject("roVideoMode")
+	cec = CreateObject("roCecInterface")
+	
 
 	device = CreateObject("roDeviceInfo")
 	deviceId = device.GetDeviceUniqueId()
@@ -43,6 +46,11 @@ Sub Main()
 						RebootSystem()
 					else if shortMsg = "refresh" then
 						htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$)
+					else if shortMsg = "off" then
+						mode.SetPowerSaveMode(true)
+						
+					else if shortMsg = "on" then
+						mode.SetPowerSaveMode(false)
 					end if
 				else if typeOfMessage = "url/" then
 					appPrefix$ = shortMsg
