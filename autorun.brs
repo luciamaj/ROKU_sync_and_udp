@@ -3,8 +3,8 @@ Sub Main()
 
 	' /Applications/MAMP/htdocs/bundler/pacchetti/welcome
 
-	urlPrefix$ = "http://192.168.1.18/bundler/pacchetti/welcome/" + appPrefix$
-	urlPrefixUpdate$ = "http://192.168.1.18/bundler/pacchetti/welcome/"
+	urlPrefix$ = "http://192.168.0.105/bundle/pacchetti/welcome/" + appPrefix$
+	urlPrefixUpdate$ = "http://192.168.0.105/bundler/pacchetti/welcome/"
 	manifest$ = "manifest.mf"
 	' End custom variables
 
