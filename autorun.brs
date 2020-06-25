@@ -4,7 +4,7 @@ Sub Main()
 	' /Applications/MAMP/htdocs/bundler/pacchetti/welcome
 
 	urlPrefix$ = "http://192.168.0.105/bundle/pacchetti/welcome/" + appPrefix$
-	urlPrefixUpdate$ = "http://192.168.0.105/bundler/pacchetti/welcome/"
+	urlPrefixUpdate$ = "http://192.168.0.105/bundle/pacchetti/welcome/"
 	manifest$ = "manifest.mf"
 	' End custom variables
 
@@ -12,7 +12,7 @@ Sub Main()
 	htmlFile$ = "index.html"
 	' Default to updating every 30 secs
 
-	htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefix$, manifest$, htmlFile$)
+	htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefix$, manifest$, htmlFile$, "false")
 	mp = CreateObject("roMessagePort")
 	udp = CreateObject("roDatagramReceiver", 5000)
 	udp.SetPort(mp)
@@ -45,17 +45,16 @@ Sub Main()
 						print "reboot " + event.GetString()
 						RebootSystem()
 					else if shortMsg = "refresh" then
-						htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$)
+						htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$, "true")
 					else if shortMsg = "off" then
 						mode.SetPowerSaveMode(true)
-						
 					else if shortMsg = "on" then
 						mode.SetPowerSaveMode(false)
 					end if
 				else if typeOfMessage = "url/" then
 					appPrefix$ = shortMsg
 					print "altro comando " + appPrefix$
-					htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$)
+					htmlWidget = DownloadAssetsAndCreateHtmlWidget(urlPrefixUpdate$ + appPrefix$, manifest$, htmlFile$, "true")
 				end if
       		end if
 	end while
@@ -342,7 +341,7 @@ Function CreateHtmlWidget(assetObjects as Object, htmlFile$ as String)
 
 End Function
 '''''''''''''''''''''''''''
-Function CreateSpecAndDownloadAssets(urlPrefix$ as String, manifest$ as String, htmlFile$ as String)
+Function CreateSpecAndDownloadAssets(urlPrefix$ as String, manifest$ as String, htmlFile$ as String, download as String)
 
 	DeleteFile("manifest.mf")
 
@@ -350,7 +349,7 @@ Function CreateSpecAndDownloadAssets(urlPrefix$ as String, manifest$ as String, 
 
 	u.SetUrl(urlPrefix$+manifest$)
 	result = u.GetToFile("manifest.mf")
-	if result <> 200 then
+	if result <> 200 OR download = "false" then
 		assetObjects = GetAssetsFromDisk()
 		return assetObjects 
 	endif
@@ -399,9 +398,8 @@ Function GetAssetsFromDisk()
 	return ret
 End Function
 '''''''''''''''''''''''''''
-Function DownloadAssetsAndCreateHtmlWidget(urlPrefix$ as String, manifest$ as String, htmlFile$ as String)
-
-	assetObjects = CreateSpecAndDownloadAssets(urlPrefix$, manifest$, htmlFile$)
+Function DownloadAssetsAndCreateHtmlWidget(urlPrefix$ as String, manifest$ as String, htmlFile$ as String, download as String)
+	assetObjects = CreateSpecAndDownloadAssets(urlPrefix$, manifest$, htmlFile$, download)
 	if (assetObjects <> invalid)
 		htmlWidget = CreateHtmlWidget(assetObjects, htmlFile$)
 		htmlWidget.Show()
